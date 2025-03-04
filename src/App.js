@@ -30,8 +30,11 @@ function App() {
 
     // Function to change the radio station in Firestore
     const changeStation = async (newStation) => {
-        await setDoc(doc(db, "stations", RADIO_DOC), { url: newStation, playing: isPlaying });
-    };
+      await setDoc(doc(db, "stations", RADIO_DOC), { 
+          url: newStation, 
+          playing: true  // Ensure it auto-plays when changed
+      });
+  };
 
     // Toggle play/pause
     const togglePlay = async () => {
@@ -48,9 +51,9 @@ function App() {
     return (
         <div style={{ textAlign: "center", padding: "20px" }}>
             <h1>Live Radio</h1>
-            <audio ref={audioRef} controls>
-                <source src={station} type="audio/mpeg" />
-                Your browser does not support the audio element.
+            <audio ref={audioRef} controls autoPlay>
+            <source src={station} type="audio/mpeg" />
+            Your browser does not support the audio element.
             </audio>
             <div>
                 <button onClick={togglePlay}>{isPlaying ? "Pause" : "Play"}</button>
@@ -70,5 +73,7 @@ function App() {
         </div>
     );
 }
+
+
 
 export default App;
