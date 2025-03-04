@@ -9,24 +9,24 @@ function App() {
     const audioRef = React.useRef(null);
 
     // Fetch the latest station from Firebase
-    useEffect(() => {
-        const unsubscribe = onSnapshot(doc(db, "stations", RADIO_DOC), (snapshot) => {
-            if (snapshot.exists()) {
-                const data = snapshot.data();
-                setStation(data.url);
-                if (audioRef.current) {
-                    audioRef.current.src = data.url;
-                    if (data.playing) {
-                        audioRef.current.play();
-                    } else {
-                        audioRef.current.pause();
-                    }
-                }
+useEffect(() => {
+    const unsubscribe = onSnapshot(doc(db, "stations", "radio"), (snapshot) => {
+        if (snapshot.exists()) {
+            const data = snapshot.data();
+            console.log("Firestore Update:", data); // Debugging log
+            setStation(""); // Force a re-render
+            setTimeout(() => setStation(data.url), 100); // Small delay to trigger UI update
+            if (audioRef.current) {
+                audioRef.current.src = data.url;
+                audioRef.current.load();
+                audioRef.current.play().catch(err => console.log("Autoplay blocked:", err));
             }
-        });
+        }
+    });
 
-        return () => unsubscribe();
-    }, []);
+    return () => unsubscribe();
+}, []);
+
 
     // Function to change the radio station in Firestore
 const changeStation = async (newStation) => {
