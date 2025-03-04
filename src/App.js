@@ -29,12 +29,17 @@ function App() {
     }, []);
 
     // Function to change the radio station in Firestore
-    const changeStation = async (newStation) => {
-      await setDoc(doc(db, "stations", RADIO_DOC), { 
-          url: newStation, 
-          playing: true  // Ensure it auto-plays when changed
-      });
-  };
+const changeStation = async (newStation) => {
+    try {
+        await setDoc(doc(db, "stations", "radio"), { 
+            url: newStation, 
+            playing: true 
+        }, { merge: true }); // Merge prevents overwriting other data
+        console.log("Station updated in Firestore:", newStation);
+    } catch (error) {
+        console.error("Error updating station:", error);
+    }
+};
 
     // Toggle play/pause
     const togglePlay = async () => {
